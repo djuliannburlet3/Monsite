@@ -2,14 +2,221 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Mon Super Site</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Taekwonkido Phénix - Art Martial & Self-Défense</title>
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; background-color: #f0f0f0; }
-        h1 { color: #333; }
+        /* Couleurs et Thème Global */
+        :root {
+            --primary-color: #d32f2f; /* Rouge Phénix */
+            --secondary-color: #1a1a1a; /* Noir Profond */
+            --text-color: #333;
+            --light-bg: #f9f9f9;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            color: var(--text-color);
+            background-color: var(--light-bg);
+        }
+
+        /* En-tête / Bannière */
+        header {
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1555597673-b21d5c935865?auto=format&fit=crop&w=1200&q=80') no-repeat center center/cover;
+            color: white;
+            text-align: center;
+            padding: 100px 20px;
+        }
+
+        header h1 {
+            font-size: 3rem;
+            margin-0: 0;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        header h1 span {
+            color: var(--primary-color);
+        }
+
+        header p {
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 20px auto 0 auto;
+        }
+
+        /* Sections de la page */
+        .container {
+            max-width: 1100px;
+            margin: auto;
+            padding: 40px 20px;
+        }
+
+        section {
+            margin-bottom: 40px;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        h2 {
+            color: var(--secondary-color);
+            border-bottom: 3px solid var(--primary-color);
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+
+        /* Valeurs du club */
+        .valeurs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .valeur-card {
+            background: var(--light-bg);
+            padding: 20px;
+            text-align: center;
+            border-radius: 6px;
+            font-weight: bold;
+            border-top: 4px solid var(--primary-color);
+        }
+
+        /* Enseignement */
+        .prof-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .badge-dan {
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            display: inline-block;
+        }
+
+        /* Lieux et horaires */
+        .lieux-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .lieu-box {
+            border-left: 4px solid var(--primary-color);
+            padding-left: 20px;
+        }
+
+        .lieu-box h3 {
+            margin-top: 0;
+            color: var(--primary-color);
+        }
+
+        /* Bouton Contact & Footer */
+        .btn-contact {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 12px 25px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background 0.3s ease;
+            margin-top: 15px;
+        }
+
+        .btn-contact:hover {
+            background-color: #b22222;
+        }
+
+        footer {
+            background-color: var(--secondary-color);
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+            font-size: 0.9rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            header h1 { font-size: 2.2rem; }
+            .lieux-grid { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
-    <h1>Bienvenue sur mon premier site web !</h1>
-    <p>Ce site est hébergé en local sur mon ordinateur.</p>
+
+    <header>
+        <h1>Taekwonkido <span>Phénix</span></h1>
+        <p>Art martial coréen traditionnel, self-défense et développement personnel pour tous, à partir de 7 ans.</p>
+    </header>
+
+    <div class="container">
+
+        <section id="presentation">
+            <h2>Bienvenue au Club</h2>
+            <p>Le <strong>Taekwonkido Phénix</strong> (affilié au Cénacle Rémi Mollet) vous propose une pratique martiale complète axée sur l'efficacité en self-défense, la condition physique et l'épanouissement personnel. Que vous soyez débutant, pratiquant confirmé, homme, femme ou enfant, les cours s'adaptent au rythme de chacun.</p>
+            
+            <div class="valeurs-grid">
+                <div class="valeur-card">Maîtrise de soi</div>
+                <div class="valeur-card">Dépassement de soi</div>
+                <div class="valeur-card">Goût de l'effort</div>
+                <div class="valeur-card">Respect mutuel</div>
+            </div>
+        </section>
+
+        <section id="enseignant">
+            <h2>Notre Enseignant</h2>
+            <div class="prof-info">
+                <div>
+                    <h3>Maître Stéphane BURLET</h3>
+                    <p><span class="badge-dan">Diplômé d'État • Ceinture Noire 6ème Dan</span></p>
+                    <p>Avec plus de 25 ans d'expérience dans l'enseignement des arts martiaux, Maître Stéphane Burlet transmet sa passion avec pédagogie, bienveillance et rigueur. Son objectif est de permettre à chaque élève de progresser à sa propre vitesse et de gagner en confiance en soi.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="lieux">
+            <h2>Nos Lieux d'Entraînement</h2>
+            <p>Le club est actif sur deux communes pour vous offrir un maximum de flexibilité :</p>
+            
+            <div class="lieux-grid">
+                <div class="lieu-box">
+                    <h3>Villeneuve-la-Comtesse</h3>
+                    <p><strong>Adresse :</strong> Ancienne école maternelle (accès par l'arrière), 18 Route Nationale, 17330</p>
+                    <p><strong>Créneaux :</strong> Cours enfants et adultes le mercredi en fin d'après-midi / soirée.</p>
+                </div>
+
+                <div class="lieu-box">
+                    <h3>Prahecq</h3>
+                    <p><strong>Adresse :</strong> Salle Omnisports (Rue des Écoles) & Maison pour Tous (Rue du Petit Logis), 79230</p>
+                    <p><strong>Créneaux :</strong> Cours adultes et enfants gradés les mardis et jeudis soir.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="contact" style="text-align: center;">
+            <h2>Rejoignez-nous !</h2>
+            <p>Envie d'essayer ? Le premier cours d'essai est gratuit tout au long de l'année.</p>
+            <p><strong>Téléphone :</strong> 06 08 23 87 24</p>
+            <p><strong>Email :</strong> stephane.burlet@cenaclerm.fr</p>
+            <a href="mailto:stephane.burlet@cenaclerm.fr" class="btn-contact">Envoyer un Message</a>
+        </section>
+
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Taekwonkido Phénix - Tous droits réservés. Affilié au Cénacle Rémi Mollet.</p>
+    </footer>
+
 </body>
 </html>
