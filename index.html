@@ -2,14 +2,187 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Mon Super Site</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Générateur d'Inventaire PC</title>
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; background-color: #f0f0f0; }
-        h1 { color: #333; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            color: #333;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            max-width: 600px;
+            width: 100%;
+        }
+        h2 { text-align: center; color: #2c3e50; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-weight: bold; }
+        select, input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+        .preview-box {
+            background: #eef2f3;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 15px;
+            border-left: 5px solid #3498db;
+        }
+        .btn {
+            background-color: #27ae60;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            font-size: 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+        .btn:hover { background-color: #219653; }
+        table { width: 100%; margin-top: 20px; border-collapse: collapse; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #34495e; color: white; }
     </style>
 </head>
 <body>
-    <h1>Bienvenue sur mon premier site web !</h1>
-    <p>Ce site est hébergé en local sur mon ordinateur.</p>
+
+<div class="container">
+    <h2>💻 Assistant Inventaire PC</h2>
+    <hr>
+    
+    <div class="form-group">
+        <label for="pcSelect">Quel PC as-tu dans la main ?</label>
+        <select id="pcSelect" onchange="remplirAutomatiquement()">
+            <option value="">-- Choisis un modèle --</option>
+            <option value="model1">HP EliteBook 840 G8</option>
+            <option value="model2">Dell Latitude 5420</option>
+            <option value="model3">Lenovo ThinkPad T14</option>
+        </select>
+    </div>
+
+    <div id="preview" class="preview-box" style="display:none;">
+        <strong>Spécifications détectées :</strong>
+        <p id="specText"></p>
+    </div>
+
+    <div class="form-group" style="margin-top: 20px;">
+        <label for="serialInput">Numéro de série (S/N) ou Tag :</label>
+        <input type="text" id="serialInput" placeholder="Ex: S2HG89324X">
+    </div>
+
+    <button class="btn" onclick="ajouterAuTableau()">Ajouter à la liste</button>
+
+    <h3>Liste à exporter :</h3>
+    <table id="inventaireTable">
+        <thead>
+            <tr>
+                <th>Modèle</th>
+                <th>Processeur</th>
+                <th>RAM</th>
+                <th>Stockage</th>
+                <th>Numéro de Série</th>
+            </tr>
+        </thead>
+        <tbody>
+            </tbody>
+    </table>
+
+    <button class="btn" style="background-color: #2980b9;" onclick="exporterExcel()">📥 Télécharger le fichier Excel (.csv)</button>
+</div>
+
+<script>
+// Base de données de tes PC (Tu pourras modifier ça !)
+const cataloguePC = {
+    "model1": { modele: "HP EliteBook 840 G8", cpu: "Intel i5-1145G7", ram: "16 Go", ssd: "512 Go SSD" },
+    "model2": { modele: "Dell Latitude 5420", cpu: "Intel i5-1135G7", ram: "8 Go", ssd: "256 Go SSD" },
+    "model3": { modele: "Lenovo ThinkPad T14", cpu: "AMD Ryzen 5 Pro", ram: "16 Go", ssd: "512 Go SSD" }
+};
+
+let listeInventaire = [];
+
+// Fonction qui remplit "toute seule"
+function remplirAutomatiquement() {
+    const choix = document.getElementById("pcSelect").value;
+    const previewBox = document.getElementById("preview");
+    const specText = document.getElementById("specText");
+
+    if (choix && cataloguePC[choix]) {
+        const pc = cataloguePC[choix];
+        specText.innerHTML = `⚙️ <b>CPU :</b> ${pc.cpu} | 🧠 <b>RAM :</b> ${pc.ram} | 💾 <b>Stockage :</b> ${pc.ssd}`;
+        previewBox.style.display = "block";
+    } else {
+        previewBox.style.display = "none";
+    }
+}
+
+// Ajouter les données dans le tableau HTML
+function ajouterAuTableau() {
+    const choix = document.getElementById("pcSelect").value;
+    const serial = document.getElementById("serialInput").value.trim();
+
+    if (!choix) {
+        alert("Choisis d'abord un modèle de PC !");
+        return;
+    }
+    if (!serial) {
+        alert("N'oublie pas de saisir le numéro de série !");
+        return;
+    }
+
+    const pc = cataloguePC[choix];
+    const donneesLigne = { ...pc, serial: serial };
+    listeInventaire.push(donneesLigne);
+
+    // Mise à jour visuelle du tableau
+    const tbody = document.getElementById("inventaireTable").getElementsByTagName("tbody")[0];
+    const nouvelleLigne = tbody.insertRow();
+    nouvelleLigne.innerHTML = `<td>${pc.modele}</td><td>${pc.cpu}</td><td>${pc.ram}</td><td>${pc.ssd}</td><td>${serial}</td>`;
+
+    // Reset des champs pour le suivant
+    document.getElementById("serialInput").value = "";
+    document.getElementById("pcSelect").value = "";
+    document.getElementById("preview").style.display = "none";
+}
+
+// Exporter toutes les lignes saisies vers Excel
+function exporterExcel() {
+    if (listeInventaire.length === 0) {
+        alert("Le tableau est vide !");
+        return;
+    }
+
+    // En-têtes du fichier Excel
+    let csvContent = "data:text/csv;charset=utf-8,\uFEFF"; // \uFEFF pour gérer les accents sur Excel Windows
+    csvContent += "Modele;Processeur;RAM;Stockage;Numero de Serie\n";
+
+    // Ajout des lignes
+    listeInventaire.forEach(pc => {
+        csvContent += `"${pc.modele}";"${pc.cpu}";"${pc.ram}";"${pc.ssd}";"${pc.serial}"\n`;
+    });
+
+    // Téléchargement du fichier
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "inventaire_pc.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+</script>
+
 </body>
 </html>
