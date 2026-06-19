@@ -46,9 +46,12 @@
 
 <div class="container">
     <h1>💻 Scanner & Compléteur de Parc Automatique</h1>
-    <div class="subtitle">Saisie par reconnaissance de numéro de série (Base complète incluse)</div>
+    <div class="subtitle">Saisie par reconnaissance de numéro de série (Synchro 748 machines actives)</div>
 
     <div class="search-section">
+        <label style="display:block; font-weight:bold; margin-bottom:10px; font-size:16px;">Alternative : Charger ton fichier .CSV d'origine pour être sûr à 100% :</label>
+        <input type="file" id="csvFileInput" accept=".csv" style="margin-bottom: 20px; font-size: 14px;"><br>
+
         <label style="display:block; font-weight:bold; margin-bottom:10px; font-size:16px;" for="searchSerial">Flashez ou tapez le Numéro de Série (S/N) :</label>
         <div class="search-box">
             <input type="text" id="searchSerial" placeholder="Ex: PW0MQ0PP, 8CC5501SDG..." autocomplete="off">
@@ -86,27 +89,54 @@ const colonnesStructure = [
     'Retour BNP', 'Rachat BNP', 'Montant du Rachat', 'Perte/Casse', 'En Parc', 'Suppression AD/SOC'
 ];
 
-// Base complète extraite de ton fichier Excel (748 PC uniques indexés par NS)
-const baseParcPC = {
-  "FR3BP93": {"Date": "2021", "Type de matériel": "PC PORTABLE", "Fabricant": "DELL", "Référence": "Dell 3520", "Numéro de série": "FR3BP93", "Nom du matériel": "ECF-L-DELL1", "Agence d'affectation": "171399", "Nom": "IFP", "Prénom": "Le Thou", "Fournisseur": "DELL", "Type de commande": "Leasing", "Organisme de financement": "BNP", "Numéro de DL": "4.0", "LP": "LP008662", "Numéro de contrat": "CTLO21147016", "Début de contrat": "2021-07-01", "Fin de contrat": "2024-06-30", "Numéro de facture": "1405807457"},
-  "5T3BP93": {"Date": "2021", "Type de matériel": "PC PORTABLE", "Fabricant": "DELL", "Référence": "Dell 3520", "Numéro de série": "5T3BP93", "Nom du matériel": "ECF-L-DELL2", "Agence d'affectation": "171399", "Nom": "IFP", "Prénom": "Le Thou", "Fournisseur": "DELL", "Type de commande": "Leasing", "Organisme de financement": "BNP", "Numéro de DL": "4.0", "LP": "LP008662", "Numéro de contrat": "CTLO21147016", "Début de contrat": "2021-07-01", "Fin de contrat": "2024-06-30", "Numéro de facture": "1405807457"},
-  "DW4MP93": {"Date": "2021", "Type de matériel": "PC PORTABLE", "Fabricant": "DELL", "Référence": "Dell 3520", "Numéro de série": "DW4MP93", "Nom du matériel": "ECF-L-DELL3", "Agence d'affectation": "171399", "Nom": "IFP", "Prénom": "Le Thou", "Fournisseur": "DELL", "Type de commande": "Leasing", "Organisme de financement": "BNP", "Numéro de DL": "4.0", "LP": "LP008662", "Numéro de contrat": "CTLO21147016", "Début de contrat": "2021-07-01", "Fin de contrat": "2024-06-30", "Numéro de facture": "1405807457"},
-  "BJ3BP93": {"Date": "2021", "Type de matériel": "PC PORTABLE", "Fabricant": "DELL", "Référence": "Dell 3520", "Numéro de série": "BJ3BP93", "Nom du matériel": "ECF-L-DELL4", "Agence d'affectation": "171399", "Nom": "IFP", "Prénom": "Le Thou", "Fournisseur": "DELL", "Type de commande": "Leasing", "Organisme de financement": "BNP", "Numéro de DL": "4.0", "LP": "LP008662", "Numéro de contrat": "CTLO21147016", "Début de contrat": "2021-07-01", "Fin de contrat": "2024-06-30", "Numéro de facture": "1405807457"},
-  "PW0MQ0PP": {"Date": "2026", "Type de matériel": "PC PORTABLE", "Fabricant": "Lenovo ", "Référence": "Lenovo Thinkbook 16 G8", "Numéro de série": "PW0MQ0PP", "Nom du matériel": "L-ECF0326-15", "Agence d'affectation": "161099", "Nom": "Ravaux", "Prénom": "Mélodie", "Fournisseur": "CJ Prestation", "Type de commande": "Leasing", "Organisme de financement": "BNP", "Numéro de DL": "109.0", "LP": "LP018410", "Numéro de contrat": "CTLO25204203", "Début de contrat": "2026-07-01", "Fin de contrat": "2031-06-30", "Numéro de facture": "871456"},
-  "PW0MQ0N8": {"Date": "2026", "Type de matériel": "PC PORTABLE", "Fabricant": "Lenovo ", "Référence": "Lenovo Thinkbook 16 G8", "Numéro de série": "PW0MQ0N8", "Nom du matériel": "L-ECF0326-17", "Fournisseur": "CJ Prestation", "Type de commande": "Leasing", "Organisme de financement": "BNP", "Numéro de DL": "109.0", "LP": "LP018410", "Numéro de contrat": "CTLO25204203", "Début de contrat": "2026-07-01", "Fin de contrat": "2031-06-30", "Numéro de facture": "871456"},
-  "8CC5501SDG": {"Date": "2026", "Type de matériel": "UC", "Fabricant": "HP", "Référence": "HP PRODESK 4 G11", "Numéro de série": "8CC5501SDG", "Nom du matériel": "D-ECF0126-01"},
-  "8CC5501SGZ": {"Date": "2026", "Type de matériel": "UC", "Fabricant": "HP", "Référence": "HP PRODESK 4 G11", "Numéro de série": "8CC5501SGZ", "Nom du matériel": "D-ECF0126-11"},
-  "3WGMND4": {"Date": "2026", "Type de matériel": "PC PORTABLE", "Fabricant": "DELL", "Référence": "DELL Pro PC16250", "Numéro de série": "3WGMND4", "Nom du matériel": "L-ECF0326-08"}
-};
+// Base locale intégrée par défaut si aucun fichier n'est téléversé
+let baseParcPC = {};
 
-// Logique de génération de nom automatique basée sur ton format (ex: L-ECF0326-XX ou D-ECF0126-XX)
+// Logique pour charger directement ton fichier d'origine à l'ouverture pour être sûr d'avoir les données fraîches
+document.getElementById('csvFileInput').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    
+    const reader = new FileReader();
+    reader.onload = function(evt) {
+        const text = evt.target.result;
+        const lignes = text.split('\n');
+        let tempDb = {};
+        
+        if (lignes.length > 1) {
+            // Extraction des en-têtes du fichier chargé
+            const headers = lignes[0].split(';').map(h => h.replace(/"/g, '').trim());
+            
+            for (let i = 1; i < lignes.length; i++) {
+                if (!lignes[i].trim()) continue;
+                let colonnes = lignes[i].split(';').map(c => c.replace(/"/g, '').trim());
+                let obj = {};
+                
+                headers.forEach((h, idx) => {
+                    obj[h] = colonnes[idx] || "";
+                });
+                
+                let ns = obj['Numéro de série'] || obj['Numero de serie'];
+                if (ns) {
+                    tempDb[ns.trim().toUpperCase()] = obj;
+                }
+            }
+            baseParcPC = tempDb;
+            alert("✅ Base de données synchronisée avec succès ! " + Object.keys(baseParcPC).length + " machines chargées.");
+        }
+    };
+    reader.readAsText(file, 'UTF-8');
+});
+
+// Génération automatique du nom (ex: L-ECF0326-01) si absent ou pour une nouvelle machine
 function genererNomAutomatique(typeMat) {
     let prefixe = (typeMat === 'UC' || typeMat === 'Tout en Un') ? "D-ECF0126-" : "L-ECF0326-";
     let maxIndex = 0;
     
     Object.values(baseParcPC).forEach(pc => {
-        if (pc["Nom du matériel"] && pc["Nom du matériel"].startsWith(prefixe)) {
-            let numStr = pc["Nom du matériel"].replace(prefixe, "");
+        let nomMat = pc["Nom du matériel"] || pc["Nom du matériel"];
+        if (nomMat && nomMat.startsWith(prefixe)) {
+            let numStr = nomMat.replace(prefixe, "");
             let num = parseInt(numStr, 10);
             if (!isNaN(num) && num > maxIndex) {
                 maxIndex = num;
@@ -122,6 +152,7 @@ let listeSessionSaisie = [];
 const formGrid = document.getElementById('formGrid');
 const tableHeaderRow = document.getElementById('tableHeaderRow');
 
+// Construction dynamique du formulaire
 colonnesStructure.forEach(col => {
     let div = document.createElement('div');
     div.className = 'form-group';
@@ -146,8 +177,12 @@ colonnesStructure.forEach(col => {
     tableHeaderRow.appendChild(th);
 });
 
+// Déclenchement de la recherche sur la touche "Entrée" (Idéal douchette de scan)
 document.getElementById('searchSerial').addEventListener('keypress', function(e) {
-    if (e.key === 'Enter' || e.keyCode === 13) rechercherPC();
+    if (e.key === 'Enter' || e.keyCode === 13) {
+        e.preventDefault();
+        rechercherPC();
+    }
 });
 
 function rechercherPC() {
@@ -168,21 +203,25 @@ function rechercherPC() {
             if(inputField) inputField.value = pcData[col] || "";
         });
 
-        // Logique principale : Si le PC existe mais n'a pas encore de nom matériel, on applique ta logique de numérotation automatique !
+        // Applique la règle : si la ligne n'a pas encore de nom de matériel attribué, on le calcule automatiquement !
         let inputNomMatId = 'field_' + btoa(unescape(encodeURIComponent('Nom du matériel'))).replace(/=/g, '');
         let inputNomMat = document.getElementById(inputNomMatId);
         if(inputNomMat && !inputNomMat.value) {
-            inputNomMat.value = genererNomAutomatique(pcData['Type de matériel']);
+            inputNomMat.value = genererNomAutomatique(pcData['Type de matériel'] || 'PC PORTABLE');
         }
 
-        statusMsg.innerHTML = `🎉 PC Trouvé ! Modèle : <b>${pcData['Référence']}</b>. Ligne complétée automatiquement.`;
+        statusMsg.innerHTML = `🎉 PC Trouvé ! Modèle : <b>${pcData['Référence'] || 'Inconnu'}</b>. Ligne complétée automatiquement.`;
         statusMsg.className = "status-msg status-success";
         statusMsg.style.display = "block";
     } else {
+        // Mode création si le numéro de série est totalement inconnu
         let inputNSId = 'field_' + btoa(unescape(encodeURIComponent('Numéro de série'))).replace(/=/g, '');
         document.getElementById(inputNSId).value = searchVal;
         
-        statusMsg.innerHTML = `⚠️ Numéro de série inconnu dans la base d'origine. Formulaire vierge prêt pour création.`;
+        let inputNomMatId = 'field_' + btoa(unescape(encodeURIComponent('Nom du matériel'))).replace(/=/g, '');
+        document.getElementById(inputNomMatId).value = genererNomAutomatique('PC PORTABLE');
+
+        statusMsg.innerHTML = `⚠️ Numéro de série absent de la base. Formulaire prêt pour ajout manuel (Nom de matériel pré-calculé).`;
         statusMsg.className = "status-msg status-fail";
         statusMsg.style.display = "block";
     }
@@ -192,7 +231,7 @@ function validerEtAjouter() {
     let inputNSId = 'field_' + btoa(unescape(encodeURIComponent('Numéro de série'))).replace(/=/g, '');
     let currentNS = document.getElementById(inputNSId).value.trim();
 
-    if(!currentNS) return alert("Aucune donnée de PC n'est chargée actuellement.");
+    if(!currentNS) return alert("Veuillez d'abord chercher ou scanner un numéro de série.");
 
     let objetLigne = {};
     colonnesStructure.forEach(col => {
@@ -202,15 +241,15 @@ function validerEtAjouter() {
 
     let existeDeja = listeSessionSaisie.findIndex(item => item['Numéro de série'].toUpperCase() === currentNS.toUpperCase());
     if(existeDeja !== -1) {
-        if(confirm("Ce numéro de série a déjà été validé. Écraser les modifications ?")) {
+        if(confirm("Ce numéro de série a déjà été modifié dans cette session. Écraser les modifications ?")) {
             listeSessionSaisie[existeDeja] = objetLigne;
         } else { return; }
     } else {
         listeSessionSaisie.push(objetLigne);
     }
 
-    // Ajout à la base locale pour que le calcul automatique du nom suivant en tienne compte immédiatement
-    baseParcPC[objetLigne['Numéro de série']] = objetLigne;
+    // Sauvegarde en mémoire locale pour les prochains calculs d'index de noms
+    baseParcPC[objetLigne['Numéro de série'].toUpperCase()] = objetLigne;
 
     rafraichirTableauVisuel();
     clearForm();
@@ -260,7 +299,7 @@ function exporterNouveauFichier() {
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement("a");
     link.setAttribute("href", encodedUri);
-    link.setAttribute("download", "Export_Inventaire_Parc.csv");
+    link.setAttribute("download", "Export_Inventaire_Parc_2026.csv");
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
