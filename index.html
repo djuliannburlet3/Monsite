@@ -3,186 +3,189 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Générateur d'Inventaire PC</title>
+    <title>Assistant Inventaire Parc Global 2026</title>
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f7f6;
-            color: #333;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-        }
-        .container {
-            background: white;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            max-width: 600px;
-            width: 100%;
-        }
-        h2 { text-align: center; color: #2c3e50; }
-        .form-group { margin-bottom: 20px; }
-        label { display: block; margin-bottom: 8px; font-weight: bold; }
-        select, input {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            box-sizing: border-box;
-            font-size: 16px;
-        }
-        .preview-box {
-            background: #eef2f3;
-            padding: 15px;
-            border-radius: 6px;
-            margin-top: 15px;
-            border-left: 5px solid #3498db;
-        }
-        .btn {
-            background-color: #27ae60;
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            font-size: 16px;
-            border-radius: 6px;
-            cursor: pointer;
-            width: 100%;
-            font-weight: bold;
-            margin-top: 15px;
-        }
-        .btn:hover { background-color: #219653; }
-        table { width: 100%; margin-top: 20px; border-collapse: collapse; }
-        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-        th { background-color: #34495e; color: white; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #f0f4f8; color: #333; margin: 0; padding: 20px; }
+        .container { max-width: 900px; margin: 0 auto; background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        h2 { color: #4472C4; text-align: center; margin-bottom: 25px; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .form-group { margin-bottom: 15px; }
+        .form-group.full { grid-column: span 2; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 14px; }
+        select, input { width: 100%; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 5px; box-sizing: border-box; font-size: 14px; }
+        select:focus, input:focus { border-color: #4472C4; outline: none; }
+        .btn { background-color: #4472C4; color: white; border: none; padding: 12px 20px; font-size: 15px; border-radius: 5px; cursor: pointer; width: 100%; font-weight: bold; margin-top: 10px; }
+        .btn:hover { background-color: #33599f; }
+        .btn-export { background-color: #27ae60; margin-top: 20px; }
+        .btn-export:hover { background-color: #1e7e43; }
+        .preview-box { background: #f8fafc; padding: 12px; border-radius: 5px; border-left: 4px solid #4472C4; margin-top: 5px; font-size: 13px; }
+        .table-container { overflow-x: auto; margin-top: 25px; }
+        table { width: 100%; border-collapse: collapse; font-size: 12px; }
+        th, td { border: 1px solid #e2e8f0; padding: 8px; text-align: left; white-space: nowrap; }
+        th { background-color: #4472C4; color: white; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>💻 Assistant Inventaire PC</h2>
-    <hr>
+    <h2>💻 Assistant de Saisie - Parc Global 2026</h2>
     
-    <div class="form-group">
-        <label for="pcSelect">Quel PC as-tu dans la main ?</label>
-        <select id="pcSelect" onchange="remplirAutomatiquement()">
-            <option value="">-- Choisis un modèle --</option>
-            <option value="model1">HP EliteBook 840 G8</option>
-            <option value="model2">Dell Latitude 5420</option>
-            <option value="model3">Lenovo ThinkPad T14</option>
-        </select>
+    <div class="grid">
+        <!-- Sélection automatique du matériel -->
+        <div class="form-group full">
+            <label for="pcSelect">Quel matériel as-tu dans la main ? 🔍</label>
+            <select id="pcSelect" onchange="remplirSpecsAutomatiques()">
+                <option value="">-- Choisis ou scanne un modèle connu --</option>
+                <option value="dell_lat_3520">PC PORTABLE - DELL - Latitude 3520</option>
+                <option value="hp_250_g8">PC PORTABLE - HP - 250 G8</option>
+                <option value="lenovo_v15">PC PORTABLE - LENOVO - V15 G2 ITL</option>
+                <option value="hp_proone_440">Tout en Un - HP - AIO HP Proone 440 G9</option>
+                <option value="optiplex_7020">UC - DELL - Optiplex Micro 7020</option>
+                <option value="hp_pro_260">UC - HP - HP Pro 260 G9 Mini</option>
+            </select>
+            <div id="preview" class="preview-box" style="display:none;"></div>
+        </div>
+
+        <!-- Champs variables à remplir sur le terrain -->
+        <div class="form-group">
+            <label for="serialInput">Numéro de série (Obligatoire) *</label>
+            <input type="text" id="serialInput" placeholder="Ex: S2HG89324X">
+        </div>
+
+        <div class="form-group">
+            <label for="nomMat">Nom du matériel (Code / ID)</label>
+            <input type="text" id="nomMat" placeholder="Ex: 490999">
+        </div>
+
+        <div class="form-group">
+            <label for="agence">Agence d'affectation</label>
+            <input type="text" id="agence" placeholder="Ex: Angers">
+        </div>
+
+        <div class="form-group">
+            <label for="utilisateur">Nom & Prénom de l'utilisateur</label>
+            <input type="text" id="utilisateur" placeholder="Ex: Jean Dupont">
+        </div>
     </div>
 
-    <div id="preview" class="preview-box" style="display:none;">
-        <strong>Spécifications détectées :</strong>
-        <p id="specText"></p>
+    <button class="btn" onclick="ajouterLigne()">Ajouter au Tableau</button>
+
+    <!-- Tableau de prévisualisation -->
+    <div class="table-container">
+        <table id="resultTable">
+            <thead>
+                <tr id="headersRow"></tr>
+            </thead>
+            <tbody></tbody>
+        </table>
     </div>
 
-    <div class="form-group" style="margin-top: 20px;">
-        <label for="serialInput">Numéro de série (S/N) ou Tag :</label>
-        <input type="text" id="serialInput" placeholder="Ex: S2HG89324X">
-    </div>
-
-    <button class="btn" onclick="ajouterAuTableau()">Ajouter à la liste</button>
-
-    <h3>Liste à exporter :</h3>
-    <table id="inventaireTable">
-        <thead>
-            <tr>
-                <th>Modèle</th>
-                <th>Processeur</th>
-                <th>RAM</th>
-                <th>Stockage</th>
-                <th>Numéro de Série</th>
-            </tr>
-        </thead>
-        <tbody>
-            </tbody>
-    </table>
-
-    <button class="btn" style="background-color: #2980b9;" onclick="exporterExcel()">📥 Télécharger le fichier Excel (.csv)</button>
+    <button class="btn btn-export" onclick="exporterCSV()">📥 Exporter vers le fichier Excel (CSV)</button>
 </div>
 
 <script>
-// Base de données de tes PC (Tu pourras modifier ça !)
+// Structure exacte des 24 colonnes de ton fichier "Tableau Parc Global 2026 Final.ods"
+const colonnesStructure = [
+    'Date', 'Type de matériel', 'Fabricant', 'Référence', 'Numéro de série', 'Nom du matériel', 
+    "Agence d'affectation", 'Nom', 'Prénom', 'Fournisseur', 'Type de commande', 'Organisme de financement', 
+    'Numéro de DL', 'LP', 'Numéro de contrat', 'Début de contrat', 'Fin de contrat', 'Numéro de facture', 
+    'Retour BNP', 'Rachat BNP', 'Montant du Rachat', 'Perte/Casse', 'En Parc', 'Suppression AD/SOC'
+];
+
+// Catalogue extrait de ton fichier avec les valeurs pré-remplies par défaut
 const cataloguePC = {
-    "model1": { modele: "HP EliteBook 840 G8", cpu: "Intel i5-1145G7", ram: "16 Go", ssd: "512 Go SSD" },
-    "model2": { modele: "Dell Latitude 5420", cpu: "Intel i5-1135G7", ram: "8 Go", ssd: "256 Go SSD" },
-    "model3": { modele: "Lenovo ThinkPad T14", cpu: "AMD Ryzen 5 Pro", ram: "16 Go", ssd: "512 Go SSD" }
+    "dell_lat_3520": { 'Type de matériel': 'PC PORTABLE', 'Fabricant': 'DELL', 'Référence': 'Latitude 3520', 'Fournisseur': 'Directe', 'En Parc': 'Oui' },
+    "hp_250_g8": { 'Type de matériel': 'PC PORTABLE', 'Fabricant': 'HP', 'Référence': 'HP 250 G8', 'Fournisseur': 'Directe', 'En Parc': 'Oui' },
+    "lenovo_v15": { 'Type de matériel': 'PC PORTABLE', 'Fabricant': 'LENOVO', 'Référence': 'Lenovo V15 G2 ITL', 'Fournisseur': 'Directe', 'En Parc': 'Oui' },
+    "hp_proone_440": { 'Type de matériel': 'Tout en Un', 'Fabricant': 'HP', 'Référence': 'AIO HP Proone 440 G9', 'Fournisseur': 'Directe', 'En Parc': 'Oui' },
+    "optiplex_7020": { 'Type de matériel': 'UC', 'Fabricant': 'DELL', 'Référence': 'Optiplex Micro 7020', 'Fournisseur': 'Directe', 'En Parc': 'Oui' },
+    "hp_pro_260": { 'Type de matériel': 'UC', 'Fabricant': 'HP', 'Référence': 'HP Pro 260 G9 Mini CI5', 'Fournisseur': 'Directe', 'En Parc': 'Oui' }
 };
 
-let listeInventaire = [];
+let rowsSaisies = [];
 
-// Fonction qui remplit "toute seule"
-function remplirAutomatiquement() {
+// Générer dynamiquement les en-têtes de tableau
+const headersRow = document.getElementById('headersRow');
+colonnesStructure.forEach(col => {
+    let th = document.createElement('th');
+    th.innerText = col;
+    headersRow.appendChild(th);
+});
+
+function remplirSpecsAutomatiques() {
     const choix = document.getElementById("pcSelect").value;
-    const previewBox = document.getElementById("preview");
-    const specText = document.getElementById("specText");
-
+    const preview = document.getElementById("preview");
     if (choix && cataloguePC[choix]) {
         const pc = cataloguePC[choix];
-        specText.innerHTML = `⚙️ <b>CPU :</b> ${pc.cpu} | 🧠 <b>RAM :</b> ${pc.ram} | 💾 <b>Stockage :</b> ${pc.ssd}`;
-        previewBox.style.display = "block";
+        preview.innerHTML = `⚙️ <b>Auto-remplissage :</b> ${pc['Type de matériel']} | ${pc['Fabricant']} | ${pc['Référence']}`;
+        preview.style.display = "block";
     } else {
-        previewBox.style.display = "none";
+        preview.style.display = "none";
     }
 }
 
-// Ajouter les données dans le tableau HTML
-function ajouterAuTableau() {
+function ajouterLigne() {
     const choix = document.getElementById("pcSelect").value;
     const serial = document.getElementById("serialInput").value.trim();
+    
+    if (!choix) return alert("Veuillez choisir un modèle !");
+    if (!serial) return alert("Le numéro de série est obligatoire !");
 
-    if (!choix) {
-        alert("Choisis d'abord un modèle de PC !");
-        return;
-    }
-    if (!serial) {
-        alert("N'oublie pas de saisir le numéro de série !");
-        return;
-    }
+    const pcDeBase = cataloguePC[choix];
+    const nomPrenom = document.getElementById("utilisateur").value.trim().split(" ");
+    
+    // Initialisation d'une ligne vide calquée sur les 24 colonnes
+    let nouvelleLigne = {};
+    colonnesStructure.forEach(col => nouvelleLigne[col] = "");
 
-    const pc = cataloguePC[choix];
-    const donneesLigne = { ...pc, serial: serial };
-    listeInventaire.push(donneesLigne);
+    // Injection des données automatiques et manuelles
+    nouvelleLigne['Date'] = new Date().getFullYear().toString(); // 2026
+    nouvelleLigne['Type de matériel'] = pcDeBase['Type de matériel'];
+    nouvelleLigne['Fabricant'] = pcDeBase['Fabricant'];
+    nouvelleLigne['Référence'] = pcDeBase['Référence'];
+    nouvelleLigne['Numéro de série'] = serial;
+    nouvelleLigne['Nom du matériel'] = document.getElementById("nomMat").value.trim();
+    nouvelleLigne["Agence d'affectation"] = document.getElementById("agence").value.trim();
+    nouvelleLigne['Nom'] = nomPrenom[0] || "";
+    nouvelleLigne['Prénom'] = nomPrenom.slice(1).join(" ") || "";
+    nouvelleLigne['Fournisseur'] = pcDeBase['Fournisseur'];
+    nouvelleLigne['En Parc'] = pcDeBase['En Parc'];
 
-    // Mise à jour visuelle du tableau
-    const tbody = document.getElementById("inventaireTable").getElementsByTagName("tbody")[0];
-    const nouvelleLigne = tbody.insertRow();
-    nouvelleLigne.innerHTML = `<td>${pc.modele}</td><td>${pc.cpu}</td><td>${pc.ram}</td><td>${pc.ssd}</td><td>${serial}</td>`;
+    rowsSaisies.push(nouvelleLigne);
 
-    // Reset des champs pour le suivant
-    document.getElementById("serialInput").value = "";
-    document.getElementById("pcSelect").value = "";
-    document.getElementById("preview").style.display = "none";
-}
-
-// Exporter toutes les lignes saisies vers Excel
-function exporterExcel() {
-    if (listeInventaire.length === 0) {
-        alert("Le tableau est vide !");
-        return;
-    }
-
-    // En-têtes du fichier Excel
-    let csvContent = "data:text/csv;charset=utf-8,\uFEFF"; // \uFEFF pour gérer les accents sur Excel Windows
-    csvContent += "Modele;Processeur;RAM;Stockage;Numero de Serie\n";
-
-    // Ajout des lignes
-    listeInventaire.forEach(pc => {
-        csvContent += `"${pc.modele}";"${pc.cpu}";"${pc.ram}";"${pc.ssd}";"${pc.serial}"\n`;
+    // Ajouter visuellement au tableau
+    const tbody = document.getElementById("resultTable").getElementsByTagName("tbody")[0];
+    const tr = tbody.insertRow();
+    colonnesStructure.forEach(col => {
+        let td = tr.insertCell();
+        td.innerText = nouvelleLigne[col];
     });
 
-    // Téléchargement du fichier
+    // Reset des inputs pour la saisie suivante
+    document.getElementById("serialInput").value = "";
+    document.getElementById("nomMat").value = "";
+    document.getElementById("utilisateur").value = "";
+}
+
+function exporterCSV() {
+    if (rowsSaisies.length === 0) return alert("Aucune donnée à exporter !");
+
+    let csvContent = "data:text/csv;charset=utf-8,\uFEFF";
+    csvContent += colonnesStructure.join(";") + "\n";
+
+    rowsSaisies.forEach(row => {
+        let ligneTab = colonnesStructure.map(col => `"${(row[col] || '').replace(/"/g, '""')}"`);
+        csvContent += ligneTab.join(";") + "\n";
+    });
+
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement("a");
     link.setAttribute("href", encodedUri);
-    link.setAttribute("download", "inventaire_pc.csv");
+    link.setAttribute("download", "Tableau_Parc_Global_Saisie.csv");
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
 }
 </script>
-
 </body>
 </html>
