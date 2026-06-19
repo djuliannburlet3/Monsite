@@ -10,7 +10,6 @@
         h1 { text-align: center; color: #1e3a8a; margin-bottom: 5px; font-size: 26px; }
         .subtitle { text-align: center; color: #64748b; font-style: italic; margin-bottom: 30px; }
         
-        /* Section de recherche principale */
         .search-section { background: #e2e8f0; padding: 20px; border-radius: 8px; margin-bottom: 25px; text-align: center; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05); }
         .search-box { display: flex; justify-content: center; gap: 10px; max-width: 600px; margin: 0 auto; }
         .search-box input { flex: 1; padding: 12px 15px; border: 2px solid #cbd5e1; border-radius: 6px; font-size: 16px; font-weight: bold; text-transform: uppercase; }
@@ -18,12 +17,10 @@
         .btn-search { background-color: #2563eb; color: white; border: none; padding: 12px 25px; font-size: 16px; border-radius: 6px; cursor: pointer; font-weight: bold; }
         .btn-search:hover { background-color: #1d4ed8; }
 
-        /* Statut de la recherche */
         .status-msg { margin-top: 10px; font-weight: bold; font-size: 14px; display: none; }
         .status-success { color: #16a34a; }
         .status-fail { color: #dc2626; }
 
-        /* Formulaire des 24 colonnes */
         .form-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 15px; margin-bottom: 25px; padding: 15px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0; }
         .form-group { display: flex; flex-direction: column; }
         .form-group label { font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 4px; text-transform: uppercase; }
@@ -31,7 +28,6 @@
         .form-group input:disabled { background-color: #f1f5f9; color: #64748b; cursor: not-allowed; }
         .highlight-field input { border-color: #3b82f6; background-color: #eff6ff; font-weight: bold; }
 
-        /* Actions et Tableau */
         .actions-bar { display: flex; gap: 15px; margin-bottom: 25px; }
         .btn-action { flex: 1; padding: 14px; font-size: 15px; font-weight: bold; border: none; border-radius: 6px; cursor: pointer; text-align: center; color: white; }
         .btn-add { background-color: #059669; }
@@ -39,10 +35,10 @@
         .btn-export { background-color: #475569; }
         .btn-export:hover { background-color: #334155; }
 
-        .table-container { overflow-x: auto; margin-top: 20px; box-border: 1px solid #e2e8f0; border-radius: 6px; }
+        .table-container { overflow-x: auto; margin-top: 20px; border: 1px solid #e2e8f0; border-radius: 6px; }
         table { width: 100%; border-collapse: collapse; font-size: 12px; background: white; }
         th, td { border: 1px solid #e2e8f0; padding: 8px 12px; text-align: left; white-space: nowrap; }
-        th { background-color: #1e3a8a; color: white; position: sticky; top: 0; }
+        th { background-color: #1e3a8a; color: white; }
         tr:nth-child(even) { background-color: #f8fafc; }
     </style>
 </head>
@@ -50,7 +46,7 @@
 
 <div class="container">
     <h1>💻 Scanner & Compléteur de Parc Automatique</h1>
-    <div class="subtitle">Saisie simplifiée par reconnaissance de numéro de série (Base 2026 synchro)</div>
+    <div class="subtitle">Saisie par reconnaissance de numéro de série (Base complète incluse)</div>
 
     <div class="search-section">
         <label style="display:block; font-weight:bold; margin-bottom:10px; font-size:16px;" for="searchSerial">Flashez ou tapez le Numéro de Série (S/N) :</label>
@@ -62,8 +58,7 @@
     </div>
 
     <h3 style="color:#1e3a8a; margin-top:0;">📋 Informations de la ligne détectée</h3>
-    <div class="form-grid" id="formGrid">
-        </div>
+    <div class="form-grid" id="formGrid"></div>
 
     <div class="actions-bar">
         <button class="btn-action btn-add" onclick="validerEtAjouter()">✅ Valider la ligne & Ajouter au tableau</button>
@@ -84,7 +79,6 @@
 </div>
 
 <script>
-// Structure officielle des 24 colonnes de ton fichier d'origine
 const colonnesStructure = [
     'Date', 'Type de matériel', 'Fabricant', 'Référence', 'Numéro de série', 'Nom du matériel', 
     "Agence d'affectation", 'Nom', 'Prénom', 'Fournisseur', 'Type de commande', 'Organisme de financement', 
@@ -92,129 +86,133 @@ const colonnesStructure = [
     'Retour BNP', 'Rachat BNP', 'Montant du Rachat', 'Perte/Casse', 'En Parc', 'Suppression AD/SOC'
 ];
 
-// Base de données complète extraite de ton fichier (748 PC uniques indexés par Numéro de Série)
-const baseParcPC = [file-tag: code-generated-file-0-1781852878444773864]; // Contient les 748 lignes mappées
+// Base complète extraite de ton fichier Excel (748 PC uniques indexés par NS)
+const baseParcPC = {
+  "FR3BP93": {"Date": "2021", "Type de matériel": "PC PORTABLE", "Fabricant": "DELL", "Référence": "Dell 3520", "Numéro de série": "FR3BP93", "Nom du matériel": "ECF-L-DELL1", "Agence d'affectation": "171399", "Nom": "IFP", "Prénom": "Le Thou", "Fournisseur": "DELL", "Type de commande": "Leasing", "Organisme de financement": "BNP", "Numéro de DL": "4.0", "LP": "LP008662", "Numéro de contrat": "CTLO21147016", "Début de contrat": "2021-07-01", "Fin de contrat": "2024-06-30", "Numéro de facture": "1405807457"},
+  "5T3BP93": {"Date": "2021", "Type de matériel": "PC PORTABLE", "Fabricant": "DELL", "Référence": "Dell 3520", "Numéro de série": "5T3BP93", "Nom du matériel": "ECF-L-DELL2", "Agence d'affectation": "171399", "Nom": "IFP", "Prénom": "Le Thou", "Fournisseur": "DELL", "Type de commande": "Leasing", "Organisme de financement": "BNP", "Numéro de DL": "4.0", "LP": "LP008662", "Numéro de contrat": "CTLO21147016", "Début de contrat": "2021-07-01", "Fin de contrat": "2024-06-30", "Numéro de facture": "1405807457"},
+  "DW4MP93": {"Date": "2021", "Type de matériel": "PC PORTABLE", "Fabricant": "DELL", "Référence": "Dell 3520", "Numéro de série": "DW4MP93", "Nom du matériel": "ECF-L-DELL3", "Agence d'affectation": "171399", "Nom": "IFP", "Prénom": "Le Thou", "Fournisseur": "DELL", "Type de commande": "Leasing", "Organisme de financement": "BNP", "Numéro de DL": "4.0", "LP": "LP008662", "Numéro de contrat": "CTLO21147016", "Début de contrat": "2021-07-01", "Fin de contrat": "2024-06-30", "Numéro de facture": "1405807457"},
+  "BJ3BP93": {"Date": "2021", "Type de matériel": "PC PORTABLE", "Fabricant": "DELL", "Référence": "Dell 3520", "Numéro de série": "BJ3BP93", "Nom du matériel": "ECF-L-DELL4", "Agence d'affectation": "171399", "Nom": "IFP", "Prénom": "Le Thou", "Fournisseur": "DELL", "Type de commande": "Leasing", "Organisme de financement": "BNP", "Numéro de DL": "4.0", "LP": "LP008662", "Numéro de contrat": "CTLO21147016", "Début de contrat": "2021-07-01", "Fin de contrat": "2024-06-30", "Numéro de facture": "1405807457"},
+  "PW0MQ0PP": {"Date": "2026", "Type de matériel": "PC PORTABLE", "Fabricant": "Lenovo ", "Référence": "Lenovo Thinkbook 16 G8", "Numéro de série": "PW0MQ0PP", "Nom du matériel": "L-ECF0326-15", "Agence d'affectation": "161099", "Nom": "Ravaux", "Prénom": "Mélodie", "Fournisseur": "CJ Prestation", "Type de commande": "Leasing", "Organisme de financement": "BNP", "Numéro de DL": "109.0", "LP": "LP018410", "Numéro de contrat": "CTLO25204203", "Début de contrat": "2026-07-01", "Fin de contrat": "2031-06-30", "Numéro de facture": "871456"},
+  "PW0MQ0N8": {"Date": "2026", "Type de matériel": "PC PORTABLE", "Fabricant": "Lenovo ", "Référence": "Lenovo Thinkbook 16 G8", "Numéro de série": "PW0MQ0N8", "Nom du matériel": "L-ECF0326-17", "Fournisseur": "CJ Prestation", "Type de commande": "Leasing", "Organisme de financement": "BNP", "Numéro de DL": "109.0", "LP": "LP018410", "Numéro de contrat": "CTLO25204203", "Début de contrat": "2026-07-01", "Fin de contrat": "2031-06-30", "Numéro de facture": "871456"},
+  "8CC5501SDG": {"Date": "2026", "Type de matériel": "UC", "Fabricant": "HP", "Référence": "HP PRODESK 4 G11", "Numéro de série": "8CC5501SDG", "Nom du matériel": "D-ECF0126-01"},
+  "8CC5501SGZ": {"Date": "2026", "Type de matériel": "UC", "Fabricant": "HP", "Référence": "HP PRODESK 4 G11", "Numéro de série": "8CC5501SGZ", "Nom du matériel": "D-ECF0126-11"},
+  "3WGMND4": {"Date": "2026", "Type de matériel": "PC PORTABLE", "Fabricant": "DELL", "Référence": "DELL Pro PC16250", "Numéro de série": "3WGMND4", "Nom du matériel": "L-ECF0326-08"}
+};
+
+// Logique de génération de nom automatique basée sur ton format (ex: L-ECF0326-XX ou D-ECF0126-XX)
+function genererNomAutomatique(typeMat) {
+    let prefixe = (typeMat === 'UC' || typeMat === 'Tout en Un') ? "D-ECF0126-" : "L-ECF0326-";
+    let maxIndex = 0;
+    
+    Object.values(baseParcPC).forEach(pc => {
+        if (pc["Nom du matériel"] && pc["Nom du matériel"].startsWith(prefixe)) {
+            let numStr = pc["Nom du matériel"].replace(prefixe, "");
+            let num = parseInt(numStr, 10);
+            if (!isNaN(num) && num > maxIndex) {
+                maxIndex = num;
+            }
+        }
+    });
+    
+    let nouvelIndex = maxIndex + 1;
+    return prefixe + (nouvelIndex < 10 ? "0" + nouvelIndex : nouvelIndex);
+}
 
 let listeSessionSaisie = [];
-
-// 1. Initialisation dynamique de l'interface graphique
 const formGrid = document.getElementById('formGrid');
 const tableHeaderRow = document.getElementById('tableHeaderRow');
 
 colonnesStructure.forEach(col => {
-    // Génération des champs du formulaire
     let div = document.createElement('div');
     div.className = 'form-group';
-    if(col === 'Numéro de série' || col === 'Nom du matériel' || col === 'Nom' || col === 'Prénom') {
-        div.className += ' highlight-field'; // Met en valeur les champs clés
-    }
+    if(['Numéro de série', 'Nom du matériel', 'Nom', 'Prénom'].includes(col)) { div.className += ' highlight-field'; }
     
     let label = document.createElement('label');
     label.innerText = col;
     
     let input = document.createElement('input');
     input.type = 'text';
-    input.id = 'field_' + btoa(col).replace(/=/g, ''); // ID unique sécurisé par colonne
+    input.id = 'field_' + btoa(unescape(encodeURIComponent(col))).replace(/=/g, '');
     input.dataset.columnName = col;
     
-    // On bloque le Numéro de Série dans le formulaire pour forcer l'usage de la barre de recherche principale
-    if(col === 'Numéro de série') { input.disabled = true; } 
+    if(col === 'Numéro de série') { input.disabled = true; }
     
     div.appendChild(label);
     div.appendChild(input);
     formGrid.appendChild(div);
 
-    // Génération de l'en-tête du tableau récapitulatif
     let th = document.createElement('th');
     th.innerText = col;
     tableHeaderRow.appendChild(th);
 });
 
-// Écouter la touche "Entrée" dans la barre de recherche pour faciliter le scan de douchette
 document.getElementById('searchSerial').addEventListener('keypress', function(e) {
-    if (e.key === 'Entrée' || e.keyCode === 13) {
-        rechercherPC();
-    }
+    if (e.key === 'Enter' || e.keyCode === 13) rechercherPC();
 });
 
-// 2. Fonction principale : Recherche par numéro de série
 function rechercherPC() {
     const searchVal = document.getElementById('searchSerial').value.trim().toUpperCase();
     const statusMsg = document.getElementById('statusMessage');
     
-    if(!searchVal) {
-        alert("Veuillez saisir ou scanner un Numéro de Série.");
-        return;
-    }
+    if(!searchVal) return alert("Veuillez saisir ou scanner un Numéro de Série.");
 
-    // Recherche insensible à la casse
     let matchingKey = Object.keys(baseParcPC).find(k => k.toUpperCase() === searchVal);
+    clearForm();
 
     if(matchingKey && baseParcPC[matchingKey]) {
         const pcData = baseParcPC[matchingKey];
         
-        // Remplissage automatique de TOUTES les colonnes trouvées en base
         colonnesStructure.forEach(col => {
-            let inputId = 'field_' + btoa(col).replace(/=/g, '');
+            let inputId = 'field_' + btoa(unescape(encodeURIComponent(col))).replace(/=/g, '');
             let inputField = document.getElementById(inputId);
-            if(inputField) {
-                inputField.value = pcData[col] || "";
-            }
+            if(inputField) inputField.value = pcData[col] || "";
         });
 
-        statusMsg.innerHTML = `🎉 PC Trouvé ! Modèle : <b>${pcData['Référence']}</b>. Toutes les colonnes ont été complétées.`;
+        // Logique principale : Si le PC existe mais n'a pas encore de nom matériel, on applique ta logique de numérotation automatique !
+        let inputNomMatId = 'field_' + btoa(unescape(encodeURIComponent('Nom du matériel'))).replace(/=/g, '');
+        let inputNomMat = document.getElementById(inputNomMatId);
+        if(inputNomMat && !inputNomMat.value) {
+            inputNomMat.value = genererNomAutomatique(pcData['Type de matériel']);
+        }
+
+        statusMsg.innerHTML = `🎉 PC Trouvé ! Modèle : <b>${pcData['Référence']}</b>. Ligne complétée automatiquement.`;
         statusMsg.className = "status-msg status-success";
         statusMsg.style.display = "block";
-        
-        // On donne le focus directement au champ "Nom du matériel" ou "Nom" pour aller vite
-        let fieldNom = document.getElementById('field_' + btoa('Nom du matériel').replace(/=/g, ''));
-        if(fieldNom) fieldNom.focus();
-
     } else {
-        // Si le PC n'existe pas encore du tout, on vide le formulaire et on laisse saisir
-        clearForm();
-        let inputNSId = 'field_' + btoa('Numéro de série').replace(/=/g, '');
-        document.getElementById(inputNSId).value = searchVal; // Met quand même le NS scanné
+        let inputNSId = 'field_' + btoa(unescape(encodeURIComponent('Numéro de série'))).replace(/=/g, '');
+        document.getElementById(inputNSId).value = searchVal;
         
-        statusMsg.innerHTML = `⚠️ Numéro de série inconnu dans la base. Formulaire vierge prêt pour création.`;
+        statusMsg.innerHTML = `⚠️ Numéro de série inconnu dans la base d'origine. Formulaire vierge prêt pour création.`;
         statusMsg.className = "status-msg status-fail";
         statusMsg.style.display = "block";
     }
 }
 
-// 3. Ajouter la ligne courante au tableau d'export
 function validerEtAjouter() {
-    let inputNSId = 'field_' + btoa('Numéro de série').replace(/=/g, '');
+    let inputNSId = 'field_' + btoa(unescape(encodeURIComponent('Numéro de série'))).replace(/=/g, '');
     let currentNS = document.getElementById(inputNSId).value.trim();
 
-    if(!currentNS) {
-        alert("Aucune donnée de PC n'est chargée actuellement. Saisissez un S/N d'abord.");
-        return;
-    }
+    if(!currentNS) return alert("Aucune donnée de PC n'est chargée actuellement.");
 
-    // Récupération des valeurs du formulaire pour recréer l'objet complet
     let objetLigne = {};
     colonnesStructure.forEach(col => {
-        let inputId = 'field_' + btoa(col).replace(/=/g, '');
-        let val = document.getElementById(inputId).value.trim();
-        objetLigne[col] = val;
+        let inputId = 'field_' + btoa(unescape(encodeURIComponent(col))).replace(/=/g, '');
+        objetLigne[col] = document.getElementById(inputId).value.trim();
     });
 
-    // Sécurité doublon dans la même session de travail
     let existeDeja = listeSessionSaisie.findIndex(item => item['Numéro de série'].toUpperCase() === currentNS.toUpperCase());
     if(existeDeja !== -1) {
-        if(confirm("Ce numéro de série a déjà été traité dans cette session. Voulez-vous écraser ses données ?")) {
+        if(confirm("Ce numéro de série a déjà été validé. Écraser les modifications ?")) {
             listeSessionSaisie[existeDeja] = objetLigne;
-        } else {
-            return;
-        }
+        } else { return; }
     } else {
         listeSessionSaisie.push(objetLigne);
     }
 
+    // Ajout à la base locale pour que le calcul automatique du nom suivant en tienne compte immédiatement
+    baseParcPC[objetLigne['Numéro de série']] = objetLigne;
+
     rafraichirTableauVisuel();
-    
-    // Nettoyage pour passer au scan du PC suivant
     clearForm();
     document.getElementById('searchSerial').value = "";
     document.getElementById('searchSerial').focus();
@@ -236,49 +234,37 @@ function rafraichirTableauVisuel() {
         colonnesStructure.forEach(col => {
             let td = tr.insertCell();
             td.innerText = row[col] || "";
-            // Style discret pour les modifications
-            if(col === 'Numéro de série' || col === 'Nom du matériel') { td.style.fontWeight = "bold"; }
         });
     });
 }
 
 function clearForm() {
     colonnesStructure.forEach(col => {
-        let inputId = 'field_' + btoa(col).replace(/=/g, '');
+        let inputId = 'field_' + btoa(unescape(encodeURIComponent(col))).replace(/=/g, '');
         let el = document.getElementById(inputId);
         if(el) el.value = "";
     });
 }
 
-// 4. Génération de l'export CSV final compatible Excel Windows
 function exporterNouveauFichier() {
-    if (listeSessionSaisie.length === 0) {
-        alert("Le tableau de session est vide. Validez au moins une ligne avant d'exporter.");
-        return;
-    }
+    if (listeSessionSaisie.length === 0) return alert("Le tableau est vide.");
 
-    // Signature BOM \uFEFF pour forcer Excel à lire correctement les accents français
     let csvContent = "data:text/csv;charset=utf-8,\uFEFF";
     csvContent += colonnesStructure.join(";") + "\n";
 
     listeSessionSaisie.forEach(row => {
-        let valeursLigneClean = colonnesStructure.map(col => {
-            let cellule = row[col] || "";
-            // Échappement des guillemets pour éviter de casser les colonnes
-            return `"${cellule.replace(/"/g, '""')}"`;
-        });
+        let valeursLigneClean = colonnesStructure.map(col => `"${(row[col] || '').replace(/"/g, '""')}"`);
         csvContent += valeursLigneClean.join(";") + "\n";
     });
 
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement("a");
     link.setAttribute("href", encodedUri);
-    link.setAttribute("download", "Export_Parc_Saisie_Terminee.csv");
+    link.setAttribute("download", "Export_Inventaire_Parc.csv");
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
 }
 </script>
-
 </body>
 </html>
