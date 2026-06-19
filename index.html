@@ -7,7 +7,8 @@
     <style>
         body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #f0f4f8; color: #333; margin: 0; padding: 20px; }
         .container { max-width: 900px; margin: 0 auto; background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-        h2 { color: #4472C4; text-align: center; margin-bottom: 25px; }
+        h2 { color: #4472C4; text-align: center; margin-bottom: 5px; }
+        .subtitle { text-align: center; color: #666; margin-bottom: 25px; font-style: italic; }
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .form-group { margin-bottom: 15px; }
         .form-group.full { grid-column: span 2; }
@@ -29,31 +30,36 @@
 
 <div class="container">
     <h2>💻 Assistant de Saisie - Parc Global 2026</h2>
+    <div class="subtitle">Modèles récents 2025 / 2026 intégrés</div>
     
     <div class="grid">
-        <!-- Sélection automatique du matériel -->
+        <!-- Sélection automatique du matériel récent -->
         <div class="form-group full">
             <label for="pcSelect">Quel matériel as-tu dans la main ? 🔍</label>
             <select id="pcSelect" onchange="remplirSpecsAutomatiques()">
-                <option value="">-- Choisis ou scanne un modèle connu --</option>
-                <option value="dell_lat_3520">PC PORTABLE - DELL - Latitude 3520</option>
-                <option value="hp_250_g8">PC PORTABLE - HP - 250 G8</option>
-                <option value="lenovo_v15">PC PORTABLE - LENOVO - V15 G2 ITL</option>
-                <option value="hp_proone_440">Tout en Un - HP - AIO HP Proone 440 G9</option>
-                <option value="optiplex_7020">UC - DELL - Optiplex Micro 7020</option>
-                <option value="hp_pro_260">UC - HP - HP Pro 260 G9 Mini</option>
+                <option value="">-- Sélectionne un modèle récent (2025-2026) --</option>
+                <optgroup label="Nouveautés 2026">
+                    <option value="dell_pro_16250">PC PORTABLE - DELL - Pro PC16250 (2026)</option>
+                    <option value="lenovo_tb_16_g8">PC PORTABLE - Lenovo - Thinkbook 16 G8 (2026)</option>
+                    <option value="hp_prodesk_g11">UC - HP - HP PRODESK 4 G11 (2026)</option>
+                </optgroup>
+                <optgroup label="Génération 2025">
+                    <option value="lenovo_v15_g4">PC PORTABLE - LENOVO - LENOVO V15G4 AMN (2025)</option>
+                    <option value="lenovo_m70q">UC - LENOVO - THINKCENTRE M70Q GEN4 (2025)</option>
+                    <option value="dell_lat_3550">PC PORTABLE - DELL - latitude 3550 btx (2025)</option>
+                </optgroup>
             </select>
             <div id="preview" class="preview-box" style="display:none;"></div>
         </div>
 
-        <!-- Champs variables à remplir sur le terrain -->
+        <!-- Champs à remplir sur le terrain -->
         <div class="form-group">
-            <label for="serialInput">Numéro de série (Obligatoire) *</label>
+            <label for="serialInput">Numéro de série (S/N) *</label>
             <input type="text" id="serialInput" placeholder="Ex: S2HG89324X">
         </div>
 
         <div class="form-group">
-            <label for="nomMat">Nom du matériel (Code / ID)</label>
+            <label for="nomMat">Nom du matériel (ex: Code unique)</label>
             <input type="text" id="nomMat" placeholder="Ex: 490999">
         </div>
 
@@ -92,19 +98,19 @@ const colonnesStructure = [
     'Retour BNP', 'Rachat BNP', 'Montant du Rachat', 'Perte/Casse', 'En Parc', 'Suppression AD/SOC'
 ];
 
-// Catalogue extrait de ton fichier avec les valeurs pré-remplies par défaut
+// Catalogue des modèles récents avec les valeurs exactes de ton fichier
 const cataloguePC = {
-    "dell_lat_3520": { 'Type de matériel': 'PC PORTABLE', 'Fabricant': 'DELL', 'Référence': 'Latitude 3520', 'Fournisseur': 'Directe', 'En Parc': 'Oui' },
-    "hp_250_g8": { 'Type de matériel': 'PC PORTABLE', 'Fabricant': 'HP', 'Référence': 'HP 250 G8', 'Fournisseur': 'Directe', 'En Parc': 'Oui' },
-    "lenovo_v15": { 'Type de matériel': 'PC PORTABLE', 'Fabricant': 'LENOVO', 'Référence': 'Lenovo V15 G2 ITL', 'Fournisseur': 'Directe', 'En Parc': 'Oui' },
-    "hp_proone_440": { 'Type de matériel': 'Tout en Un', 'Fabricant': 'HP', 'Référence': 'AIO HP Proone 440 G9', 'Fournisseur': 'Directe', 'En Parc': 'Oui' },
-    "optiplex_7020": { 'Type de matériel': 'UC', 'Fabricant': 'DELL', 'Référence': 'Optiplex Micro 7020', 'Fournisseur': 'Directe', 'En Parc': 'Oui' },
-    "hp_pro_260": { 'Type de matériel': 'UC', 'Fabricant': 'HP', 'Référence': 'HP Pro 260 G9 Mini CI5', 'Fournisseur': 'Directe', 'En Parc': 'Oui' }
+    "dell_pro_16250": { 'Date': '2026', 'Type de matériel': 'PC PORTABLE', 'Fabricant': 'DELL', 'Référence': 'DELL Pro PC16250', 'En Parc': 'Oui' },
+    "lenovo_tb_16_g8": { 'Date': '2026', 'Type de matériel': 'PC PORTABLE', 'Fabricant': 'Lenovo', 'Référence': 'Lenovo Thinkbook 16 G8', 'En Parc': 'Oui' },
+    "hp_prodesk_g11": { 'Date': '2026', 'Type de matériel': 'UC', 'Fabricant': 'HP', 'Référence': 'HP PRODESK 4 G11', 'En Parc': 'Oui' },
+    "lenovo_v15_g4": { 'Date': '2025', 'Type de matériel': 'PC PORTABLE', 'Fabricant': 'LENOVO', 'Référence': 'LENOVO V15G4 AMN 82YU', 'En Parc': 'Oui' },
+    "lenovo_m70q": { 'Date': '2025', 'Type de matériel': 'UC', 'Fabricant': 'LENOVO', 'Référence': 'THINKCENTRE M70Q GEN4', 'En Parc': 'Oui' },
+    "dell_lat_3550": { 'Date': '2025', 'Type de matériel': 'PC PORTABLE', 'Fabricant': 'DELL', 'Référence': 'DELL latitude 3550 btx', 'En Parc': 'Oui' }
 };
 
 let rowsSaisies = [];
 
-// Générer dynamiquement les en-têtes de tableau
+// Générer les en-têtes du tableau
 const headersRow = document.getElementById('headersRow');
 colonnesStructure.forEach(col => {
     let th = document.createElement('th');
@@ -117,7 +123,7 @@ function remplirSpecsAutomatiques() {
     const preview = document.getElementById("preview");
     if (choix && cataloguePC[choix]) {
         const pc = cataloguePC[choix];
-        preview.innerHTML = `⚙️ <b>Auto-remplissage :</b> ${pc['Type de matériel']} | ${pc['Fabricant']} | ${pc['Référence']}`;
+        preview.innerHTML = `⚙️ <b>Auto-remplissage (${pc['Date']}) :</b> ${pc['Type de matériel']} | ${pc['Fabricant']} | ${pc['Référence']}`;
         preview.style.display = "block";
     } else {
         preview.style.display = "none";
@@ -134,12 +140,12 @@ function ajouterLigne() {
     const pcDeBase = cataloguePC[choix];
     const nomPrenom = document.getElementById("utilisateur").value.trim().split(" ");
     
-    // Initialisation d'une ligne vide calquée sur les 24 colonnes
+    // Initialisation d'une ligne vide calquée sur la structure
     let nouvelleLigne = {};
     colonnesStructure.forEach(col => nouvelleLigne[col] = "");
 
-    // Injection des données automatiques et manuelles
-    nouvelleLigne['Date'] = new Date().getFullYear().toString(); // 2026
+    // Injection automatique
+    nouvelleLigne['Date'] = pcDeBase['Date'];
     nouvelleLigne['Type de matériel'] = pcDeBase['Type de matériel'];
     nouvelleLigne['Fabricant'] = pcDeBase['Fabricant'];
     nouvelleLigne['Référence'] = pcDeBase['Référence'];
@@ -148,7 +154,6 @@ function ajouterLigne() {
     nouvelleLigne["Agence d'affectation"] = document.getElementById("agence").value.trim();
     nouvelleLigne['Nom'] = nomPrenom[0] || "";
     nouvelleLigne['Prénom'] = nomPrenom.slice(1).join(" ") || "";
-    nouvelleLigne['Fournisseur'] = pcDeBase['Fournisseur'];
     nouvelleLigne['En Parc'] = pcDeBase['En Parc'];
 
     rowsSaisies.push(nouvelleLigne);
@@ -161,7 +166,7 @@ function ajouterLigne() {
         td.innerText = nouvelleLigne[col];
     });
 
-    // Reset des inputs pour la saisie suivante
+    // Reset partiel
     document.getElementById("serialInput").value = "";
     document.getElementById("nomMat").value = "";
     document.getElementById("utilisateur").value = "";
@@ -181,7 +186,7 @@ function exporterCSV() {
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement("a");
     link.setAttribute("href", encodedUri);
-    link.setAttribute("download", "Tableau_Parc_Global_Saisie.csv");
+    link.setAttribute("download", "Tableau_Parc_Global_Saisie_2026.csv");
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
