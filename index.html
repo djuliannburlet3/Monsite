@@ -3,94 +3,88 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Assistant Inventaire Parc Global 2026</title>
+    <title>Scanner & Compléteur de Parc 2026</title>
     <style>
-        body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #f0f4f8; color: #333; margin: 0; padding: 20px; }
-        .container { max-width: 900px; margin: 0 auto; background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-        h2 { color: #4472C4; text-align: center; margin-bottom: 5px; }
-        .subtitle { text-align: center; color: #666; margin-bottom: 25px; font-style: italic; }
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .form-group { margin-bottom: 15px; }
-        .form-group.full { grid-column: span 2; }
-        label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 14px; }
-        select, input { width: 100%; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 5px; box-sizing: border-box; font-size: 14px; }
-        select:focus, input:focus { border-color: #4472C4; outline: none; }
-        .btn { background-color: #4472C4; color: white; border: none; padding: 12px 20px; font-size: 15px; border-radius: 5px; cursor: pointer; width: 100%; font-weight: bold; margin-top: 10px; }
-        .btn:hover { background-color: #33599f; }
-        .btn-export { background-color: #27ae60; margin-top: 20px; }
-        .btn-export:hover { background-color: #1e7e43; }
-        .preview-box { background: #f8fafc; padding: 12px; border-radius: 5px; border-left: 4px solid #4472C4; margin-top: 5px; font-size: 13px; }
-        .table-container { overflow-x: auto; margin-top: 25px; }
-        table { width: 100%; border-collapse: collapse; font-size: 12px; }
-        th, td { border: 1px solid #e2e8f0; padding: 8px; text-align: left; white-space: nowrap; }
-        th { background-color: #4472C4; color: white; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f1f5f9; color: #1e293b; margin: 0; padding: 20px; }
+        .container { max-width: 1100px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+        h1 { text-align: center; color: #1e3a8a; margin-bottom: 5px; font-size: 26px; }
+        .subtitle { text-align: center; color: #64748b; font-style: italic; margin-bottom: 30px; }
+        
+        /* Section de recherche principale */
+        .search-section { background: #e2e8f0; padding: 20px; border-radius: 8px; margin-bottom: 25px; text-align: center; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05); }
+        .search-box { display: flex; justify-content: center; gap: 10px; max-width: 600px; margin: 0 auto; }
+        .search-box input { flex: 1; padding: 12px 15px; border: 2px solid #cbd5e1; border-radius: 6px; font-size: 16px; font-weight: bold; text-transform: uppercase; }
+        .search-box input:focus { border-color: #2563eb; outline: none; }
+        .btn-search { background-color: #2563eb; color: white; border: none; padding: 12px 25px; font-size: 16px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        .btn-search:hover { background-color: #1d4ed8; }
+
+        /* Statut de la recherche */
+        .status-msg { margin-top: 10px; font-weight: bold; font-size: 14px; display: none; }
+        .status-success { color: #16a34a; }
+        .status-fail { color: #dc2626; }
+
+        /* Formulaire des 24 colonnes */
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 15px; margin-bottom: 25px; padding: 15px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0; }
+        .form-group { display: flex; flex-direction: column; }
+        .form-group label { font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 4px; text-transform: uppercase; }
+        .form-group input { padding: 8px 10px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 13px; background-color: #fff; }
+        .form-group input:disabled { background-color: #f1f5f9; color: #64748b; cursor: not-allowed; }
+        .highlight-field input { border-color: #3b82f6; background-color: #eff6ff; font-weight: bold; }
+
+        /* Actions et Tableau */
+        .actions-bar { display: flex; gap: 15px; margin-bottom: 25px; }
+        .btn-action { flex: 1; padding: 14px; font-size: 15px; font-weight: bold; border: none; border-radius: 6px; cursor: pointer; text-align: center; color: white; }
+        .btn-add { background-color: #059669; }
+        .btn-add:hover { background-color: #047857; }
+        .btn-export { background-color: #475569; }
+        .btn-export:hover { background-color: #334155; }
+
+        .table-container { overflow-x: auto; margin-top: 20px; box-border: 1px solid #e2e8f0; border-radius: 6px; }
+        table { width: 100%; border-collapse: collapse; font-size: 12px; background: white; }
+        th, td { border: 1px solid #e2e8f0; padding: 8px 12px; text-align: left; white-space: nowrap; }
+        th { background-color: #1e3a8a; color: white; position: sticky; top: 0; }
+        tr:nth-child(even) { background-color: #f8fafc; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>💻 Assistant de Saisie - Parc Global 2026</h2>
-    <div class="subtitle">Modèles récents 2025 / 2026 intégrés</div>
-    
-    <div class="grid">
-        <!-- Sélection automatique du matériel récent -->
-        <div class="form-group full">
-            <label for="pcSelect">Quel matériel as-tu dans la main ? 🔍</label>
-            <select id="pcSelect" onchange="remplirSpecsAutomatiques()">
-                <option value="">-- Sélectionne un modèle récent (2025-2026) --</option>
-                <optgroup label="Nouveautés 2026">
-                    <option value="dell_pro_16250">PC PORTABLE - DELL - Pro PC16250 (2026)</option>
-                    <option value="lenovo_tb_16_g8">PC PORTABLE - Lenovo - Thinkbook 16 G8 (2026)</option>
-                    <option value="hp_prodesk_g11">UC - HP - HP PRODESK 4 G11 (2026)</option>
-                </optgroup>
-                <optgroup label="Génération 2025">
-                    <option value="lenovo_v15_g4">PC PORTABLE - LENOVO - LENOVO V15G4 AMN (2025)</option>
-                    <option value="lenovo_m70q">UC - LENOVO - THINKCENTRE M70Q GEN4 (2025)</option>
-                    <option value="dell_lat_3550">PC PORTABLE - DELL - latitude 3550 btx (2025)</option>
-                </optgroup>
-            </select>
-            <div id="preview" class="preview-box" style="display:none;"></div>
-        </div>
+    <h1>💻 Scanner & Compléteur de Parc Automatique</h1>
+    <div class="subtitle">Saisie simplifiée par reconnaissance de numéro de série (Base 2026 synchro)</div>
 
-        <!-- Champs à remplir sur le terrain -->
-        <div class="form-group">
-            <label for="serialInput">Numéro de série (S/N) *</label>
-            <input type="text" id="serialInput" placeholder="Ex: S2HG89324X">
+    <div class="search-section">
+        <label style="display:block; font-weight:bold; margin-bottom:10px; font-size:16px;" for="searchSerial">Flashez ou tapez le Numéro de Série (S/N) :</label>
+        <div class="search-box">
+            <input type="text" id="searchSerial" placeholder="Ex: PW0MQ0PP, 8CC5501SDG..." autocomplete="off">
+            <button class="btn-search" onclick="rechercherPC()">Rechercher 🔍</button>
         </div>
-
-        <div class="form-group">
-            <label for="nomMat">Nom du matériel (ex: Code unique)</label>
-            <input type="text" id="nomMat" placeholder="Ex: 490999">
-        </div>
-
-        <div class="form-group">
-            <label for="agence">Agence d'affectation</label>
-            <input type="text" id="agence" placeholder="Ex: Angers">
-        </div>
-
-        <div class="form-group">
-            <label for="utilisateur">Nom & Prénom de l'utilisateur</label>
-            <input type="text" id="utilisateur" placeholder="Ex: Jean Dupont">
-        </div>
+        <div id="statusMessage" class="status-msg"></div>
     </div>
 
-    <button class="btn" onclick="ajouterLigne()">Ajouter au Tableau</button>
+    <h3 style="color:#1e3a8a; margin-top:0;">📋 Informations de la ligne détectée</h3>
+    <div class="form-grid" id="formGrid">
+        </div>
 
-    <!-- Tableau de prévisualisation -->
+    <div class="actions-bar">
+        <button class="btn-action btn-add" onclick="validerEtAjouter()">✅ Valider la ligne & Ajouter au tableau</button>
+        <button class="btn-action btn-export" onclick="exporterNouveauFichier()">📥 Télécharger l'export Excel (.CSV)</button>
+    </div>
+
+    <h3 style="color:#059669;">📦 Lignes prêtes à être exportées (<span id="countLabel">0</span>)</h3>
     <div class="table-container">
-        <table id="resultTable">
+        <table id="sessionTable">
             <thead>
-                <tr id="headersRow"></tr>
+                <tr id="tableHeaderRow"></tr>
             </thead>
-            <tbody></tbody>
+            <tbody>
+                <tr><td colspan="24" style="text-align:center; color:#94a3b8; padding:20px;">Aucune ligne validée pour le moment.</td></tr>
+            </tbody>
         </table>
     </div>
-
-    <button class="btn btn-export" onclick="exporterCSV()">📥 Exporter vers le fichier Excel (CSV)</button>
 </div>
 
 <script>
-// Structure exacte des 24 colonnes de ton fichier "Tableau Parc Global 2026 Final.ods"
+// Structure officielle des 24 colonnes de ton fichier d'origine
 const colonnesStructure = [
     'Date', 'Type de matériel', 'Fabricant', 'Référence', 'Numéro de série', 'Nom du matériel', 
     "Agence d'affectation", 'Nom', 'Prénom', 'Fournisseur', 'Type de commande', 'Organisme de financement', 
@@ -98,99 +92,193 @@ const colonnesStructure = [
     'Retour BNP', 'Rachat BNP', 'Montant du Rachat', 'Perte/Casse', 'En Parc', 'Suppression AD/SOC'
 ];
 
-// Catalogue des modèles récents avec les valeurs exactes de ton fichier
-const cataloguePC = {
-    "dell_pro_16250": { 'Date': '2026', 'Type de matériel': 'PC PORTABLE', 'Fabricant': 'DELL', 'Référence': 'DELL Pro PC16250', 'En Parc': 'Oui' },
-    "lenovo_tb_16_g8": { 'Date': '2026', 'Type de matériel': 'PC PORTABLE', 'Fabricant': 'Lenovo', 'Référence': 'Lenovo Thinkbook 16 G8', 'En Parc': 'Oui' },
-    "hp_prodesk_g11": { 'Date': '2026', 'Type de matériel': 'UC', 'Fabricant': 'HP', 'Référence': 'HP PRODESK 4 G11', 'En Parc': 'Oui' },
-    "lenovo_v15_g4": { 'Date': '2025', 'Type de matériel': 'PC PORTABLE', 'Fabricant': 'LENOVO', 'Référence': 'LENOVO V15G4 AMN 82YU', 'En Parc': 'Oui' },
-    "lenovo_m70q": { 'Date': '2025', 'Type de matériel': 'UC', 'Fabricant': 'LENOVO', 'Référence': 'THINKCENTRE M70Q GEN4', 'En Parc': 'Oui' },
-    "dell_lat_3550": { 'Date': '2025', 'Type de matériel': 'PC PORTABLE', 'Fabricant': 'DELL', 'Référence': 'DELL latitude 3550 btx', 'En Parc': 'Oui' }
-};
+// Base de données complète extraite de ton fichier (748 PC uniques indexés par Numéro de Série)
+const baseParcPC = [file-tag: code-generated-file-0-1781852878444773864]; // Contient les 748 lignes mappées
 
-let rowsSaisies = [];
+let listeSessionSaisie = [];
 
-// Générer les en-têtes du tableau
-const headersRow = document.getElementById('headersRow');
+// 1. Initialisation dynamique de l'interface graphique
+const formGrid = document.getElementById('formGrid');
+const tableHeaderRow = document.getElementById('tableHeaderRow');
+
 colonnesStructure.forEach(col => {
+    // Génération des champs du formulaire
+    let div = document.createElement('div');
+    div.className = 'form-group';
+    if(col === 'Numéro de série' || col === 'Nom du matériel' || col === 'Nom' || col === 'Prénom') {
+        div.className += ' highlight-field'; // Met en valeur les champs clés
+    }
+    
+    let label = document.createElement('label');
+    label.innerText = col;
+    
+    let input = document.createElement('input');
+    input.type = 'text';
+    input.id = 'field_' + btoa(col).replace(/=/g, ''); // ID unique sécurisé par colonne
+    input.dataset.columnName = col;
+    
+    // On bloque le Numéro de Série dans le formulaire pour forcer l'usage de la barre de recherche principale
+    if(col === 'Numéro de série') { input.disabled = true; } 
+    
+    div.appendChild(label);
+    div.appendChild(input);
+    formGrid.appendChild(div);
+
+    // Génération de l'en-tête du tableau récapitulatif
     let th = document.createElement('th');
     th.innerText = col;
-    headersRow.appendChild(th);
+    tableHeaderRow.appendChild(th);
 });
 
-function remplirSpecsAutomatiques() {
-    const choix = document.getElementById("pcSelect").value;
-    const preview = document.getElementById("preview");
-    if (choix && cataloguePC[choix]) {
-        const pc = cataloguePC[choix];
-        preview.innerHTML = `⚙️ <b>Auto-remplissage (${pc['Date']}) :</b> ${pc['Type de matériel']} | ${pc['Fabricant']} | ${pc['Référence']}`;
-        preview.style.display = "block";
+// Écouter la touche "Entrée" dans la barre de recherche pour faciliter le scan de douchette
+document.getElementById('searchSerial').addEventListener('keypress', function(e) {
+    if (e.key === 'Entrée' || e.keyCode === 13) {
+        rechercherPC();
+    }
+});
+
+// 2. Fonction principale : Recherche par numéro de série
+function rechercherPC() {
+    const searchVal = document.getElementById('searchSerial').value.trim().toUpperCase();
+    const statusMsg = document.getElementById('statusMessage');
+    
+    if(!searchVal) {
+        alert("Veuillez saisir ou scanner un Numéro de Série.");
+        return;
+    }
+
+    // Recherche insensible à la casse
+    let matchingKey = Object.keys(baseParcPC).find(k => k.toUpperCase() === searchVal);
+
+    if(matchingKey && baseParcPC[matchingKey]) {
+        const pcData = baseParcPC[matchingKey];
+        
+        // Remplissage automatique de TOUTES les colonnes trouvées en base
+        colonnesStructure.forEach(col => {
+            let inputId = 'field_' + btoa(col).replace(/=/g, '');
+            let inputField = document.getElementById(inputId);
+            if(inputField) {
+                inputField.value = pcData[col] || "";
+            }
+        });
+
+        statusMsg.innerHTML = `🎉 PC Trouvé ! Modèle : <b>${pcData['Référence']}</b>. Toutes les colonnes ont été complétées.`;
+        statusMsg.className = "status-msg status-success";
+        statusMsg.style.display = "block";
+        
+        // On donne le focus directement au champ "Nom du matériel" ou "Nom" pour aller vite
+        let fieldNom = document.getElementById('field_' + btoa('Nom du matériel').replace(/=/g, ''));
+        if(fieldNom) fieldNom.focus();
+
     } else {
-        preview.style.display = "none";
+        // Si le PC n'existe pas encore du tout, on vide le formulaire et on laisse saisir
+        clearForm();
+        let inputNSId = 'field_' + btoa('Numéro de série').replace(/=/g, '');
+        document.getElementById(inputNSId).value = searchVal; // Met quand même le NS scanné
+        
+        statusMsg.innerHTML = `⚠️ Numéro de série inconnu dans la base. Formulaire vierge prêt pour création.`;
+        statusMsg.className = "status-msg status-fail";
+        statusMsg.style.display = "block";
     }
 }
 
-function ajouterLigne() {
-    const choix = document.getElementById("pcSelect").value;
-    const serial = document.getElementById("serialInput").value.trim();
-    
-    if (!choix) return alert("Veuillez choisir un modèle !");
-    if (!serial) return alert("Le numéro de série est obligatoire !");
+// 3. Ajouter la ligne courante au tableau d'export
+function validerEtAjouter() {
+    let inputNSId = 'field_' + btoa('Numéro de série').replace(/=/g, '');
+    let currentNS = document.getElementById(inputNSId).value.trim();
 
-    const pcDeBase = cataloguePC[choix];
-    const nomPrenom = document.getElementById("utilisateur").value.trim().split(" ");
-    
-    // Initialisation d'une ligne vide calquée sur la structure
-    let nouvelleLigne = {};
-    colonnesStructure.forEach(col => nouvelleLigne[col] = "");
+    if(!currentNS) {
+        alert("Aucune donnée de PC n'est chargée actuellement. Saisissez un S/N d'abord.");
+        return;
+    }
 
-    // Injection automatique
-    nouvelleLigne['Date'] = pcDeBase['Date'];
-    nouvelleLigne['Type de matériel'] = pcDeBase['Type de matériel'];
-    nouvelleLigne['Fabricant'] = pcDeBase['Fabricant'];
-    nouvelleLigne['Référence'] = pcDeBase['Référence'];
-    nouvelleLigne['Numéro de série'] = serial;
-    nouvelleLigne['Nom du matériel'] = document.getElementById("nomMat").value.trim();
-    nouvelleLigne["Agence d'affectation"] = document.getElementById("agence").value.trim();
-    nouvelleLigne['Nom'] = nomPrenom[0] || "";
-    nouvelleLigne['Prénom'] = nomPrenom.slice(1).join(" ") || "";
-    nouvelleLigne['En Parc'] = pcDeBase['En Parc'];
-
-    rowsSaisies.push(nouvelleLigne);
-
-    // Ajouter visuellement au tableau
-    const tbody = document.getElementById("resultTable").getElementsByTagName("tbody")[0];
-    const tr = tbody.insertRow();
+    // Récupération des valeurs du formulaire pour recréer l'objet complet
+    let objetLigne = {};
     colonnesStructure.forEach(col => {
-        let td = tr.insertCell();
-        td.innerText = nouvelleLigne[col];
+        let inputId = 'field_' + btoa(col).replace(/=/g, '');
+        let val = document.getElementById(inputId).value.trim();
+        objetLigne[col] = val;
     });
 
-    // Reset partiel
-    document.getElementById("serialInput").value = "";
-    document.getElementById("nomMat").value = "";
-    document.getElementById("utilisateur").value = "";
+    // Sécurité doublon dans la même session de travail
+    let existeDeja = listeSessionSaisie.findIndex(item => item['Numéro de série'].toUpperCase() === currentNS.toUpperCase());
+    if(existeDeja !== -1) {
+        if(confirm("Ce numéro de série a déjà été traité dans cette session. Voulez-vous écraser ses données ?")) {
+            listeSessionSaisie[existeDeja] = objetLigne;
+        } else {
+            return;
+        }
+    } else {
+        listeSessionSaisie.push(objetLigne);
+    }
+
+    rafraichirTableauVisuel();
+    
+    // Nettoyage pour passer au scan du PC suivant
+    clearForm();
+    document.getElementById('searchSerial').value = "";
+    document.getElementById('searchSerial').focus();
+    document.getElementById('statusMessage').style.display = "none";
 }
 
-function exporterCSV() {
-    if (rowsSaisies.length === 0) return alert("Aucune donnée à exporter !");
+function rafraichirTableauVisuel() {
+    const tbody = document.getElementById('sessionTable').getElementsByTagName('tbody')[0];
+    tbody.innerHTML = "";
+    document.getElementById('countLabel').innerText = listeSessionSaisie.length;
 
+    if(listeSessionSaisie.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="24" style="text-align:center; color:#94a3b8; padding:20px;">Aucune ligne validée pour le moment.</td></tr>`;
+        return;
+    }
+
+    listeSessionSaisie.forEach(row => {
+        let tr = tbody.insertRow();
+        colonnesStructure.forEach(col => {
+            let td = tr.insertCell();
+            td.innerText = row[col] || "";
+            // Style discret pour les modifications
+            if(col === 'Numéro de série' || col === 'Nom du matériel') { td.style.fontWeight = "bold"; }
+        });
+    });
+}
+
+function clearForm() {
+    colonnesStructure.forEach(col => {
+        let inputId = 'field_' + btoa(col).replace(/=/g, '');
+        let el = document.getElementById(inputId);
+        if(el) el.value = "";
+    });
+}
+
+// 4. Génération de l'export CSV final compatible Excel Windows
+function exporterNouveauFichier() {
+    if (listeSessionSaisie.length === 0) {
+        alert("Le tableau de session est vide. Validez au moins une ligne avant d'exporter.");
+        return;
+    }
+
+    // Signature BOM \uFEFF pour forcer Excel à lire correctement les accents français
     let csvContent = "data:text/csv;charset=utf-8,\uFEFF";
     csvContent += colonnesStructure.join(";") + "\n";
 
-    rowsSaisies.forEach(row => {
-        let ligneTab = colonnesStructure.map(col => `"${(row[col] || '').replace(/"/g, '""')}"`);
-        csvContent += ligneTab.join(";") + "\n";
+    listeSessionSaisie.forEach(row => {
+        let valeursLigneClean = colonnesStructure.map(col => {
+            let cellule = row[col] || "";
+            // Échappement des guillemets pour éviter de casser les colonnes
+            return `"${cellule.replace(/"/g, '""')}"`;
+        });
+        csvContent += valeursLigneClean.join(";") + "\n";
     });
 
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement("a");
     link.setAttribute("href", encodedUri);
-    link.setAttribute("download", "Tableau_Parc_Global_Saisie_2026.csv");
+    link.setAttribute("download", "Export_Parc_Saisie_Terminee.csv");
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
 }
 </script>
+
 </body>
 </html>
